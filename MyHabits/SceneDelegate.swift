@@ -16,7 +16,35 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let window = (scene as? UIWindowScene) else { return }
+
+        let firstNavigationController = UINavigationController(rootViewController: HabitsViewController())
+        let secondNavigationController = UINavigationController(rootViewController: InfoViewController())
+
+        let tapBarController = UITabBarController()
+        tapBarController.viewControllers = [
+                firstNavigationController,
+                secondNavigationController]
+
+        // задаем цвет для navigationController (верх) и tabBarController (низ)
+        firstNavigationController.navigationBar.backgroundColor = UIColor.white
+        secondNavigationController.navigationBar.backgroundColor = UIColor.white
+
+        tapBarController.tabBar.backgroundColor = UIColor.white
+        tapBarController.viewControllers?[0].tabBarItem.title = "Привычки"
+        tapBarController.viewControllers?[1].tabBarItem.title = "Информация"
+
+        tapBarController.viewControllers?.enumerated().forEach {
+            $1.tabBarItem.image = $0 == 0 ? UIImage(systemName: "equal")
+            : UIImage(systemName: "info.circle")
+        }
+// докрасить нужно в фиолетовый значки
+        tapBarController.viewControllers?[0].tabBarItem.badgeColor = UIColor(red: 161, green: 22, blue: 204, alpha: 1)
+        tapBarController.viewControllers?[1].tabBarItem.badgeColor = UIColor(red: 161, green: 22, blue: 204, alpha: 1)
+
+        self.window = UIWindow(windowScene: window)
+        self.window?.rootViewController = tapBarController
+        self.window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
