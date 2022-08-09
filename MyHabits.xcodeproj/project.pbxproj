@@ -15,6 +15,7 @@
 		1D3B3128289FC327001440EB /* HabitsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D3B3127289FC327001440EB /* HabitsViewController.swift */; };
 		1D3B312A289FC352001440EB /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D3B3129289FC352001440EB /* InfoViewController.swift */; };
 		1D3B312C289FC8BE001440EB /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D3B312B289FC8BE001440EB /* Constants.swift */; };
+		1D3B312E28A10E80001440EB /* HabitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D3B312D28A10E80001440EB /* HabitViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		1D3B3127289FC327001440EB /* HabitsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsViewController.swift; sourceTree = "<group>"; };
 		1D3B3129289FC352001440EB /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		1D3B312B289FC8BE001440EB /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		1D3B312D28A10E80001440EB /* HabitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 				1D3B3113289FBC0C001440EB /* SceneDelegate.swift */,
 				1D3B3125289FBDD2001440EB /* HabitsStore.swift */,
 				1D3B3127289FC327001440EB /* HabitsViewController.swift */,
+				1D3B312D28A10E80001440EB /* HabitViewController.swift */,
 				1D3B3129289FC352001440EB /* InfoViewController.swift */,
 				1D3B312B289FC8BE001440EB /* Constants.swift */,
 				1D3B311A289FBC0F001440EB /* Assets.xcassets */,
@@ -145,6 +148,7 @@
 			files = (
 				1D3B3126289FBDD2001440EB /* HabitsStore.swift in Sources */,
 				1D3B3112289FBC0C001440EB /* AppDelegate.swift in Sources */,
+				1D3B312E28A10E80001440EB /* HabitViewController.swift in Sources */,
 				1D3B3128289FC327001440EB /* HabitsViewController.swift in Sources */,
 				1D3B312A289FC352001440EB /* InfoViewController.swift in Sources */,
 				1D3B3114289FBC0C001440EB /* SceneDelegate.swift in Sources */,

@@ -49,7 +49,6 @@ class InfoViewController: UIViewController {
     }
 
     private func setupNavigation(){
-        navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = Constants.infoTitleView
         navigationController?.navigationBar.backgroundColor = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = false
