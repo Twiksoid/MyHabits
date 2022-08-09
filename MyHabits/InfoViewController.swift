@@ -9,6 +9,8 @@ import UIKit
 
 class InfoViewController: UIViewController {
 
+    //MARK: - Задание элементов, которые будем показывать
+
     private lazy var infoLabelStart: UILabel = {
         let label = UILabel()
         label.font = .boldSystemFont(ofSize: 21)
@@ -48,6 +50,8 @@ class InfoViewController: UIViewController {
         setupView()
     }
 
+    //MARK: - Создание и настройка
+
     private func setupNavigation(){
         navigationItem.title = Constants.infoTitleView
         navigationController?.navigationBar.backgroundColor = .systemBackground
@@ -55,7 +59,7 @@ class InfoViewController: UIViewController {
     }
 
     private func setupView(){
-
+        
         view.backgroundColor = .white
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)

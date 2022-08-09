@@ -9,6 +9,8 @@ import UIKit
 
 class HabitViewController: UIViewController {
     
+    //MARK: - Создаем элементы, которые будем показывать
+    
     private lazy var titleText: UITextField = {
         let text = UITextField()
         text.text = Constants.name
@@ -77,7 +79,7 @@ class HabitViewController: UIViewController {
         text.translatesAutoresizingMaskIntoConstraints = false
         return text
     }()
-
+    
     private lazy var timeValue: UILabel = {
         let text = UILabel()
         text.font = .systemFont(ofSize: 16)
@@ -85,7 +87,7 @@ class HabitViewController: UIViewController {
         text.translatesAutoresizingMaskIntoConstraints = false
         return text
     }()
-
+    
     private lazy var timePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.preferredDatePickerStyle = .wheels
@@ -94,33 +96,33 @@ class HabitViewController: UIViewController {
         picker.addTarget(self, action: #selector(timeChanged), for: .valueChanged)
         return picker
     }()
-
+    
     @objc private func timeChanged(){
         let timeFormat = DateFormatter()
         timeFormat.timeStyle = .short
         timeValue.text = timeFormat.string(from: timePicker.date)
     }
-
+    
     private lazy var scrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.translatesAutoresizingMaskIntoConstraints = false
         return scroll
     }()
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(showKeyboard(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(hideKeyboard), name: UIResponder.keyboardDidHideNotification, object: nil)
     }
-
+    
     @objc private func showKeyboard(_ notification: Notification){
         if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
             let keyboardRectangle = keyboardFrame.cgRectValue
             let keyboardHeight = keyboardRectangle.height
-
+            
             let bottomPointYOfPicker = timePicker.frame.origin.y + timePicker.frame.height
             let keyboardOriginY = view.frame.height - keyboardHeight - 45
-
+            
             var offSet: CGFloat = CGFloat()
             if keyboardOriginY <= bottomPointYOfPicker {
                 offSet = bottomPointYOfPicker - keyboardOriginY
@@ -128,12 +130,12 @@ class HabitViewController: UIViewController {
             scrollView.contentOffset = CGPoint(x: 0, y: offSet)
         }
     }
-
+    
     private func setupGesture(){
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         view.addGestureRecognizer(tapGesture)
     }
-
+    
     @objc private func hideKeyboard(){
         view.endEditing(true)
         scrollView.setContentOffset(.zero, animated: true)
@@ -144,7 +146,19 @@ class HabitViewController: UIViewController {
         setupView()
         setupNavigationBar()
         setupGesture()
+        // убрать перед сдачей :)   делал тестовые данные, чтобы понять, как модель работает
+        testPrint()
     }
+    
+    private func testPrint(){
+        for i in 0...HabitsStore.shared.habits.count-1 {
+            print("Привычка: ", HabitsStore.shared.habits[i].name)
+            print("Привычка: ", HabitsStore.shared.habits[i].color)
+            print("Привычка: ", HabitsStore.shared.habits[i].date)
+        }}
+    
+    //MARK: - Задание и настройка
+    
     
     func setupView(){
         view.backgroundColor = .white
@@ -157,37 +171,37 @@ class HabitViewController: UIViewController {
         scrollView.addSubview(everyTimeText)
         scrollView.addSubview(timePicker)
         scrollView.addSubview(timeValue)
-
+        
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
             scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
-
+            
             titleText.topAnchor.constraint(equalTo: scrollView.topAnchor),
             titleText.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 10),
-
+            
             labelText.topAnchor.constraint(equalTo: titleText.bottomAnchor, constant: 8),
             labelText.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 10),
-
+            
             colorText.topAnchor.constraint(equalTo: labelText.bottomAnchor, constant: 8),
             colorText.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 10),
-
+            
             pickerColorButton.topAnchor.constraint(equalTo: colorText.bottomAnchor, constant: 8),
             pickerColorButton.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 10),
             pickerColorButton.widthAnchor.constraint(equalToConstant: 40),
             pickerColorButton.heightAnchor.constraint(equalToConstant: 40),
-
+            
             timeText.topAnchor.constraint(equalTo: pickerColorButton.bottomAnchor, constant: 8),
             timeText.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 10),
-
+            
             everyTimeText.topAnchor.constraint(equalTo: timeText.bottomAnchor, constant: 8),
             everyTimeText.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 10),
-
+            
             timePicker.topAnchor.constraint(equalTo: everyTimeText.bottomAnchor),
             timePicker.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
-
+            
             timeValue.leadingAnchor.constraint(equalTo: everyTimeText.trailingAnchor, constant: 5),
             timeValue.bottomAnchor.constraint(equalTo: everyTimeText.bottomAnchor)
             
@@ -216,11 +230,26 @@ class HabitViewController: UIViewController {
         dismiss(animated: true)
     }
     
-    @objc private func saveAddTask(){}
-    
+    @objc private func saveAddTask(){
+        if labelText.text?.isEmpty == true {
+            // если поля Название пустое, то покажи алерт, что так нельзя
+            let alert = UIAlertController(title: Constants.alertTitle, message: Constants.alertText, preferredStyle: .alert)
+            let alertButton = UIAlertAction(title: Constants.agreement, style: .default, handler: { _ in })
+            alert.addAction(alertButton)
+            present(alert, animated: true, completion: nil)
+        } else {
+            let newHabit = Habit(name: labelText.text!,
+                                 date: Date(),
+                                 color: UIColor(cgColor: pickerColorButton.backgroundColor?.cgColor ?? CGColor(red: 1, green: 1, blue: 1, alpha: 1)))
+            let store = HabitsStore.shared
+            store.habits.append(newHabit)
+            dismiss(animated: true)
+        }
+    }
 }
 
-// чтобы пикер цвета работал
+//MARK: - Расширение, чтобы можно было работать с пикером цвета
+
 extension HabitViewController: UIColorPickerViewControllerDelegate {
     // что сделать, когда выбрал цвет
     func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
