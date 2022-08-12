@@ -7,7 +7,11 @@
 
 import UIKit
 
+// сама задача (создание / удаление)
+
 class HabitViewController: UIViewController {
+    
+    weak var progressBarCollectionViewCellDelegate: ProgressCollectionViewCell?
     
     //MARK: - Создаем элементы, которые будем показывать
     
@@ -23,6 +27,7 @@ class HabitViewController: UIViewController {
     
     private lazy var labelText: UITextField = {
         let label = UITextField()
+        label.text = ""
         label.isEnabled = true
         label.placeholder = Constants.placeholder
         label.font = .systemFont(ofSize: 14)
@@ -141,21 +146,51 @@ class HabitViewController: UIViewController {
         scrollView.setContentOffset(.zero, animated: true)
     }
     
+    private lazy var deliteButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .white
+        button.setTitle(Constants.deliteButton, for: .normal)
+        button.setTitleColor(.red, for: .normal)
+        button.isUserInteractionEnabled = true
+        button.isHidden = false
+        button.addTarget(self, action: #selector(tapForDelite), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    @objc func tapForDelite(){
+        // тут алерт показать должны
+        let alert = UIAlertController(title: Constants.alertTitleDelite, message: Constants.alertTextDelite + labelText.text!, preferredStyle: .alert)
+        let canselAlert = UIAlertAction(title: "Отмена", style: .cancel, handler: {_ in })
+        let aprufAlert = UIAlertAction(title: "Удалить", style: .destructive)
+        
+        alert.addAction(canselAlert)
+        alert.addAction(aprufAlert)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         setupNavigationBar()
         setupGesture()
         // убрать перед сдачей :)   делал тестовые данные, чтобы понять, как модель работает
-        testPrint()
+        testCreateData()
     }
     
-    private func testPrint(){
-        for i in 0...HabitsStore.shared.habits.count-1 {
-            print("Привычка: ", HabitsStore.shared.habits[i].name)
-            print("Привычка: ", HabitsStore.shared.habits[i].color)
-            print("Привычка: ", HabitsStore.shared.habits[i].date)
-        }}
+    private func testCreateData(){
+        //        let newHabit = Habit(name: "Почесать пузико котика",
+        //                             date: Date(),
+        //                             color: .black)
+        //        let store = HabitsStore.shared
+        //        store.habits.append(newHabit)
+        //
+        //        let newHabit2 = Habit(name: "Когда-нибудь я сделаю курсач",
+        //                             date: Date(),
+        //                              color: .green)
+        //        store.habits.append(newHabit2)
+    }
     
     //MARK: - Задание и настройка
     
@@ -171,6 +206,7 @@ class HabitViewController: UIViewController {
         scrollView.addSubview(everyTimeText)
         scrollView.addSubview(timePicker)
         scrollView.addSubview(timeValue)
+        scrollView.addSubview(deliteButton)
         
         
         NSLayoutConstraint.activate([
@@ -203,8 +239,11 @@ class HabitViewController: UIViewController {
             timePicker.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
             
             timeValue.leadingAnchor.constraint(equalTo: everyTimeText.trailingAnchor, constant: 5),
-            timeValue.bottomAnchor.constraint(equalTo: everyTimeText.bottomAnchor)
+            timeValue.bottomAnchor.constraint(equalTo: everyTimeText.bottomAnchor),
             
+            deliteButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
+            deliteButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            deliteButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     
@@ -227,7 +266,12 @@ class HabitViewController: UIViewController {
     }
     
     @objc private func canselAddTask(){
+        updateViewControllerAfterOpenNewAddTask()
         dismiss(animated: true)
+    }
+    
+    private func updateViewControllerAfterOpenNewAddTask(){
+        progressBarCollectionViewCellDelegate?.layoutIfNeeded()
     }
     
     @objc private func saveAddTask(){
@@ -245,6 +289,7 @@ class HabitViewController: UIViewController {
             store.habits.append(newHabit)
             dismiss(animated: true)
         }
+        updateViewControllerAfterOpenNewAddTask()
     }
 }
 

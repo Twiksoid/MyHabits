@@ -17,36 +17,26 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="main_icon" translatesAutoresizingMaskIntoConstraints="NO" id="WRB-6y-E6y">
+                                <rect key="frame" x="147" y="393" width="120" height="120"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
+                                </accessibility>
+                            </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="MyHabits" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q4S-1K-sCC">
                                 <rect key="frame" x="100" y="791" width="214" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" name="CustomColorPurple"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LSI" translatesAutoresizingMaskIntoConstraints="NO" id="QIx-RZ-zxJ">
-                                <rect key="frame" x="117" y="363" width="180" height="180"/>
-                                <accessibility key="accessibilityConfiguration">
-                                    <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
-                                </accessibility>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="180" id="gsd-iV-Rsf"/>
-                                    <constraint firstAttribute="width" constant="180" id="xaa-0z-NFv"/>
-                                </constraints>
-                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
-                            </imageView>
-                            <progressView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" progress="1" id="8jL-sc-Cij">
-                                <rect key="frame" x="0.0" y="861" width="414" height="2"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <color key="progressTintColor" name="CustomColorOrange"/>
-                            </progressView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="WRB-6y-E6y" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="2Qc-Ok-zJH"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Q4S-1K-sCC" secondAttribute="trailing" constant="100" id="BAW-dz-aXE"/>
-                            <constraint firstItem="QIx-RZ-zxJ" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="V9c-ET-iSh"/>
+                            <constraint firstItem="WRB-6y-E6y" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="IO3-ZS-wEK"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Q4S-1K-sCC" secondAttribute="bottom" constant="50" id="ZBB-Er-Y91"/>
-                            <constraint firstItem="QIx-RZ-zxJ" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="dZz-6T-38b"/>
                             <constraint firstItem="Q4S-1K-sCC" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="100" id="iFC-LI-TIU"/>
                         </constraints>
                     </view>
@@ -57,10 +47,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LSI" width="1024" height="1024"/>
-        <namedColor name="CustomColorOrange">
-            <color red="1" green="0.62400001287460327" blue="0.31000000238418579" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
+        <image name="main_icon" width="120" height="120"/>
         <namedColor name="CustomColorPurple">
             <color red="0.63099998235702515" green="0.086000002920627594" blue="0.80000001192092896" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
