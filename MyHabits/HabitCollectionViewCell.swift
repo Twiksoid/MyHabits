@@ -4,15 +4,11 @@
 //
 //  Created by Nikita Byzov on 10.08.2022.
 //
+// сама ячейка (как выглядит) таска
 
 import UIKit
 
-//сама ячейка (как выглядит) таска
-
 class HabitCollectionViewCell: UICollectionViewCell {
-    
-    weak var progressBarCollectionViewCellDelegate: ProgressCollectionViewCell?
-    //weak var habitsViewControllerDelegate: HabitsViewController?
     
     private lazy var taskName: UILabel = {
         let label = UILabel()
@@ -52,18 +48,15 @@ class HabitCollectionViewCell: UICollectionViewCell {
     }()
     
     @objc func imageTapped(){
-        
-        print(image.tag)
-        
         if HabitsStore.shared.habits[image.tag].isAlreadyTakenToday {
+            // только принт сделаем, пользователю ничего не покажем
             print("Уже трекано")
         } else {
             HabitsStore.shared.track(HabitsStore.shared.habits[image.tag])
             updateImageOfTask(image.tag)
             updateCounterOfTask(image.tag)
-            progressBarCollectionViewCellDelegate?.setupProgressBar()
-            progressBarCollectionViewCellDelegate?.layoutIfNeeded()
-            // обновления количества привычек не хватает :(
+            // слушатель как раз обновит прогресс-бар
+            NotificationCenter.default.post(name: Notification.Name(rawValue: notificationKeyForCellUpdate), object: self)
         }
     }
     
@@ -104,8 +97,8 @@ class HabitCollectionViewCell: UICollectionViewCell {
         taskName.textColor = HabitsStore.shared.habits[index].color
         taskName.text = HabitsStore.shared.habits[index].name
         repeatTime.text = HabitsStore.shared.habits[index].dateString
+        // нумеруем изображения равным номеру ячейки, в которой оно отображается
         image.tag = index
-        progressBarCollectionViewCellDelegate?.setupProgressBar()
         updateCounterOfTask(index)
         updateImageOfTask(index)
     }

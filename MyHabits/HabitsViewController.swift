@@ -7,6 +7,8 @@
 
 // Экран привычек
 import UIKit
+// Ключ для нотификатора
+let notificationKeyForCellUpdate = "updateProgressBar"
 
 protocol DelegateCollectionCellIndex {
     var indexPathCell: IndexPath { get set }
@@ -42,15 +44,16 @@ class HabitsViewController: UIViewController {
     
     //MARK: - Задание и настройка
     
-    //    override func viewWillAppear(_ animated: Bool) {
-    //        super.viewWillAppear(animated)
-    //        reloadData()
-    //    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        // слушатель, чтобы обновлять таблицу
+        NotificationCenter.default.addObserver(self, selector: #selector(updateProgressBar), name: Notification.Name(rawValue: notificationKeyForCellUpdate), object: nil)
         setupView()
         setupNavigationBar()
+    }
+    
+    @objc func updateProgressBar(){
+        collectionView.reloadData()
     }
     
     func setupView(){
@@ -81,8 +84,11 @@ class HabitsViewController: UIViewController {
     
     @objc private func addNewTask(){
         // тут вызываем экран создания записи
-        let add = UINavigationController(rootViewController: HabitViewController())
-        self.navigationController?.present(add, animated: true, completion: nil)
+        let viewNameToGo = HabitViewController()
+        // передаю ссылку на текущий контроллер
+        viewNameToGo.habitsMainSceneDelegate = self
+        let goTo = UINavigationController(rootViewController: viewNameToGo)
+        self.navigationController?.present(goTo, animated: true)
     }
 }
 
@@ -90,12 +96,13 @@ class HabitsViewController: UIViewController {
 
 extension HabitsViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout  {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        // в 0 секции только прогресс-бар, в 1 секции - все таски
         if section == 0 {return 1} else {
-            print("Количество тасков - ", HabitsStore.shared.habits.count)
             return HabitsStore.shared.habits.count
         }}
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
+        // 1 секция под прогресс-бар, 2 под таски
         2
     }
     
@@ -114,7 +121,6 @@ extension HabitsViewController: UICollectionViewDataSource, UICollectionViewDele
             if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CellForTask", for: indexPath) as? HabitCollectionViewCell {
                 cell.layer.cornerRadius = 10
                 cell.backgroundColor = .white
-                
                 cell.setupCellForTask(indexPath.row)
                 return cell
             } else {
@@ -123,33 +129,45 @@ extension HabitsViewController: UICollectionViewDataSource, UICollectionViewDele
             }
         }
     }
-    func reloadData(){
-        collectionView.reloadData()
-        print("catched")
-        view.layoutIfNeeded()
-        view.setNeedsDisplay()
-    }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // нажатия по 0 секции (прогресс-бар) ничего не должны делать, по нажатию на таск должны перейти на его деталку
         if indexPath.section > 0 {
+            collectionView.reloadData()
             let vc = HabitDetailsViewController()
+            // передаю ссылку на текущий контроллер (первый экран)
+            vc.firstViewController = self
             vc.indexPathCollection = indexPath
             navigationController?.pushViewController(vc, animated: true)
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        // чтобы ширина автоматически подбиралась под рамзеры устройства
+        // чтобы ширина автоматически подбиралась под размеры устройства
         let insets = (collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.sectionInset ?? .zero
         let interItemSpacing = (collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.minimumInteritemSpacing ?? 0
         let width = collectionView.frame.width - (1 - 1) * interItemSpacing - insets.left - insets.right
         let itemWidth = floor(width / 1)
-        // для ячейки со статус баром кастомная высота - 10% ширины устройства. Для остальных - 31%
-        if indexPath.section == 0 { let height = collectionView.frame.height * 0.1
+        // для ячейки со статус баром кастомная высота - 11% ширины устройства. Для остальных - 150
+        if indexPath.section == 0 {
+            let height = collectionView.frame.height * 0.11
             return CGSize(width: itemWidth, height: height)
         } else {
-            return CGSize(width: itemWidth, height: itemWidth*0.31)
-        }}
+            return CGSize(width: itemWidth, height: 150)
+        }
+    }
 }
 
+//MARK: Подпись на расширение для обновления коллекции с данными
+
+extension HabitsViewController: HabitViewControllerDelegate {
+    func reloadTaskCell() {
+        collectionView.reloadData()
+    }
+}
+
+extension HabitsViewController: HabitDetailsViewControllerForFirstSceneDelegate {
+    func reloadAfterWatchDetails() {
+        collectionView.reloadData()
+    }
+}

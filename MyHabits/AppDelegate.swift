@@ -11,6 +11,8 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // Красим верхние кнопки навБара в один цвет
+        UINavigationBar.appearance().tintColor = UIColor(named: "CustomColorPurple")
         // Override point for customization after application launch.
         return true
     }

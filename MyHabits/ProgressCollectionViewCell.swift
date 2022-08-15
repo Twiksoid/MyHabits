@@ -4,10 +4,9 @@
 //
 //  Created by Nikita Byzov on 10.08.2022.
 //
+// сама ячейка (прогресс-бар), как отображается
 
 import UIKit
-
-// сама ячейка (статус бар) как отображается
 
 class ProgressCollectionViewCell: UICollectionViewCell {
     
@@ -69,7 +68,7 @@ class ProgressCollectionViewCell: UICollectionViewCell {
     }
     
     func setupProgressBar(){
-        // тут нужно будет задать сколько выполнено - текстом и индикатору
+        // заполняем текущий процесс выполнения задач
         if Int(HabitsStore.shared.todayProgress * 100) == 0 {
             progressLabel.text = "0%"
         } else {

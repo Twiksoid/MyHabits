@@ -39,7 +39,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             : UIImage(systemName: "info.circle")
         }
         // докрасить нужно в фиолетовый значки, если выбрано. Если не выбрано, то останется серый по дефолту
-        tapBarController.tabBar.selectedImageTintColor = UIColor(named: "CustomColorPurple")
+        tapBarController.tabBar.tintColor = UIColor(named: "CustomColorPurple")
         
         self.window = UIWindow(windowScene: window)
         self.window?.rootViewController = tapBarController

@@ -4,14 +4,28 @@
 //
 //  Created by Nikita Byzov on 08.08.2022.
 //
+// сама задача (создание / удаление)
 
 import UIKit
 
-// сама задача (создание / удаление)
+protocol HabitViewControllerDelegate {
+    func reloadTaskCell()
+}
+
+protocol HabitDetailsViewControllerDelegate {
+    func backToMainScene()
+}
+
+protocol HabitsReturnDelegate {
+    func backToInitViewController()
+}
 
 class HabitViewController: UIViewController {
     
-    weak var progressBarCollectionViewCellDelegate: ProgressCollectionViewCell?
+    weak var beginScene: HabitsViewController?
+    weak var habitsMainSceneDelegate: HabitsViewController?
+    weak var habitDetailsDelegate: HabitDetailsViewController?
+    var indexFromDetailView: IndexPath?
     
     //MARK: - Создаем элементы, которые будем показывать
     
@@ -28,6 +42,7 @@ class HabitViewController: UIViewController {
     private lazy var labelText: UITextField = {
         let label = UITextField()
         label.text = ""
+        label.isUserInteractionEnabled = true
         label.isEnabled = true
         label.placeholder = Constants.placeholder
         label.font = .systemFont(ofSize: 14)
@@ -146,23 +161,30 @@ class HabitViewController: UIViewController {
         scrollView.setContentOffset(.zero, animated: true)
     }
     
-    private lazy var deliteButton: UIButton = {
+    private lazy var deleteButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .white
-        button.setTitle(Constants.deliteButton, for: .normal)
+        button.setTitle(Constants.deleteButton, for: .normal)
         button.setTitleColor(.red, for: .normal)
         button.isUserInteractionEnabled = true
         button.isHidden = false
-        button.addTarget(self, action: #selector(tapForDelite), for: .touchUpInside)
+        button.addTarget(self, action: #selector(tapForDelete), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
-    @objc func tapForDelite(){
+    @objc func tapForDelete(){
         // тут алерт показать должны
-        let alert = UIAlertController(title: Constants.alertTitleDelite, message: Constants.alertTextDelite + labelText.text!, preferredStyle: .alert)
-        let canselAlert = UIAlertAction(title: "Отмена", style: .cancel, handler: {_ in })
-        let aprufAlert = UIAlertAction(title: "Удалить", style: .destructive)
+        let alert = UIAlertController(title: Constants.alertTitleDelete, message: Constants.alertTextDelete + "'" + labelText.text! + "'?", preferredStyle: .alert)
+        let canselAlert = UIAlertAction(title: Constants.alertButtonCansel, style: .cancel, handler: {_ in })
+        let aprufAlert = UIAlertAction(title: Constants.alertButtonDelete, style: .destructive) { (action) in
+            
+            HabitsStore.shared.habits.remove(at: self.indexFromDetailView!.row)
+            self.updateViewControllerAfterOpenNewAddTask()
+            self.dismiss(animated: true)
+            // тут должны вернуться в корень еще
+            self.habitDetailsDelegate?.backToMainScene()
+        }
         
         alert.addAction(canselAlert)
         alert.addAction(aprufAlert)
@@ -175,25 +197,29 @@ class HabitViewController: UIViewController {
         setupView()
         setupNavigationBar()
         setupGesture()
-        // убрать перед сдачей :)   делал тестовые данные, чтобы понять, как модель работает
-        testCreateData()
+        setupDateForEditing()
     }
     
-    private func testCreateData(){
-        //        let newHabit = Habit(name: "Почесать пузико котика",
-        //                             date: Date(),
-        //                             color: .black)
-        //        let store = HabitsStore.shared
-        //        store.habits.append(newHabit)
-        //
-        //        let newHabit2 = Habit(name: "Когда-нибудь я сделаю курсач",
-        //                             date: Date(),
-        //                              color: .green)
-        //        store.habits.append(newHabit2)
+    func setupDateForEditing(){
+        if isEditing == false {
+            deleteButton.isHidden = true
+        } else if isEditing == true {
+            // Если в режим редактирования существующей записи зашел, то кнопку удалить покажи
+            // Все данные заполни по итогам нужной записи
+            // Поскольку дата хранится с текстом, то текст нужно вырезать
+            let symbols: [Character] = ["К", "а", "ж", "д", "ы", "й", "е", "н", "ь", "в", " "]
+            var time = HabitsStore.shared.habits[indexFromDetailView!.row].dateString
+            time.removeAll(where: { symbols.contains($0) })
+            
+            navigationItem.title = Constants.editTitle
+            labelText.text = HabitsStore.shared.habits[indexFromDetailView!.row].name
+            pickerColorButton.backgroundColor = HabitsStore.shared.habits[indexFromDetailView!.row].color
+            timeValue.text = time
+            deleteButton.isHidden = false
+        }
     }
     
     //MARK: - Задание и настройка
-    
     
     func setupView(){
         view.backgroundColor = .white
@@ -206,7 +232,7 @@ class HabitViewController: UIViewController {
         scrollView.addSubview(everyTimeText)
         scrollView.addSubview(timePicker)
         scrollView.addSubview(timeValue)
-        scrollView.addSubview(deliteButton)
+        scrollView.addSubview(deleteButton)
         
         
         NSLayoutConstraint.activate([
@@ -241,9 +267,9 @@ class HabitViewController: UIViewController {
             timeValue.leadingAnchor.constraint(equalTo: everyTimeText.trailingAnchor, constant: 5),
             timeValue.bottomAnchor.constraint(equalTo: everyTimeText.bottomAnchor),
             
-            deliteButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
-            deliteButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            deliteButton.heightAnchor.constraint(equalToConstant: 50)
+            deleteButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
+            deleteButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            deleteButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     
@@ -253,8 +279,8 @@ class HabitViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = false
         
         // создаю новый объект в верхнем баре
-        let cansel = UIBarButtonItem(title: "Отменить", style: .plain, target: self, action: #selector(canselAddTask))
-        let save = UIBarButtonItem(title: "Сохранить", style: .done, target: self, action: #selector(saveAddTask))
+        let cansel = UIBarButtonItem(title: Constants.navBarCansel, style: .plain, target: self, action: #selector(canselAddTask))
+        let save = UIBarButtonItem(title: Constants.navBarSave, style: .done, target: self, action: #selector(saveAddTask))
         
         // крашу его в фиолетовый
         cansel.tintColor = UIColor(named: "CustomColorPurple")
@@ -271,7 +297,8 @@ class HabitViewController: UIViewController {
     }
     
     private func updateViewControllerAfterOpenNewAddTask(){
-        progressBarCollectionViewCellDelegate?.layoutIfNeeded()
+        beginScene?.reloadAfterWatchDetails()
+        habitsMainSceneDelegate?.reloadTaskCell()
     }
     
     @objc private func saveAddTask(){
@@ -281,14 +308,24 @@ class HabitViewController: UIViewController {
             let alertButton = UIAlertAction(title: Constants.agreement, style: .default, handler: { _ in })
             alert.addAction(alertButton)
             present(alert, animated: true, completion: nil)
-        } else {
+        } else { if isEditing == false {
             let newHabit = Habit(name: labelText.text!,
                                  date: Date(),
                                  color: UIColor(cgColor: pickerColorButton.backgroundColor?.cgColor ?? CGColor(red: 1, green: 1, blue: 1, alpha: 1)))
             let store = HabitsStore.shared
             store.habits.append(newHabit)
+            updateViewControllerAfterOpenNewAddTask()
             dismiss(animated: true)
-        }
+        } else if isEditing == true {
+            // тут должно быть обновление данных у текущей задачи - indexFromDetailView
+            HabitsStore.shared.habits[indexFromDetailView!.row].name = labelText.text!
+            HabitsStore.shared.habits[indexFromDetailView!.row].color = pickerColorButton.backgroundColor!
+            HabitsStore.shared.habits[indexFromDetailView!.row].date = timePicker.date
+            updateViewControllerAfterOpenNewAddTask()
+            dismiss(animated: true)
+            // и вернуться на главный экран
+            self.habitDetailsDelegate?.backToMainScene()
+        }}
         updateViewControllerAfterOpenNewAddTask()
     }
 }
