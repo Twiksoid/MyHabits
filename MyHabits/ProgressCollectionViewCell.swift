@@ -69,11 +69,7 @@ class ProgressCollectionViewCell: UICollectionViewCell {
     
     func setupProgressBar(){
         // заполняем текущий процесс выполнения задач
-        if Int(HabitsStore.shared.todayProgress * 100) == 0 {
-            progressLabel.text = "0%"
-        } else {
-            progressLabel.text = String(Int(HabitsStore.shared.todayProgress * 100)) + "%"
-        }
+        progressLabel.text = String(Int(HabitsStore.shared.todayProgress * 100)) + "%"
         progressBar.progress = HabitsStore.shared.todayProgress
     }
 }

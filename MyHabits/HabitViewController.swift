@@ -29,8 +29,8 @@ class HabitViewController: UIViewController {
     
     //MARK: - Создаем элементы, которые будем показывать
     
-    private lazy var titleText: UITextField = {
-        let text = UITextField()
+    private lazy var titleText: UILabel = {
+        let text = UILabel()
         text.text = Constants.name
         text.isEnabled = false
         text.font = .systemFont(ofSize: 16)
@@ -51,8 +51,8 @@ class HabitViewController: UIViewController {
         return label
     }()
     
-    private lazy var colorText: UITextField = {
-        let text = UITextField()
+    private lazy var colorText: UILabel = {
+        let text = UILabel()
         text.text = Constants.color
         text.isEnabled = false
         text.font = .systemFont(ofSize: 16)
@@ -80,8 +80,8 @@ class HabitViewController: UIViewController {
         present(colorPickerVC, animated: true)
     }
     
-    private lazy var timeText: UITextField = {
-        let text = UITextField()
+    private lazy var timeText: UILabel = {
+        let text = UILabel()
         text.text = Constants.time
         text.isEnabled = false
         text.font = .systemFont(ofSize: 16)
@@ -90,8 +90,8 @@ class HabitViewController: UIViewController {
         return text
     }()
     
-    private lazy var everyTimeText: UITextField = {
-        let text = UITextField()
+    private lazy var everyTimeText: UILabel = {
+        let text = UILabel()
         text.text = Constants.everyDayIn
         text.isEnabled = false
         text.font = .systemFont(ofSize: 16)

@@ -104,10 +104,7 @@ class HabitCollectionViewCell: UICollectionViewCell {
     }
     
     func updateCounterOfTask(_ index: Int) {
-        if HabitsStore.shared.habits[index].trackDates.count == 0 {
-            counter.text = "Счётчик: 0"
-        } else {
-            counter.text = "Счётчик: \(String(HabitsStore.shared.habits[index].trackDates.count))"}
+        counter.text = "Счётчик: \(String(HabitsStore.shared.habits[index].trackDates.count))"
     }
     
     func updateImageOfTask(_ index: Int){

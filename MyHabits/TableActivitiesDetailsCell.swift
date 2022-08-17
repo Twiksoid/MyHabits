@@ -26,22 +26,6 @@ class TableActivitiesDetailsCell: UITableViewCell {
         return image
     }()
     
-    func setFirstMark(_ row: Int){
-        // по умолчанию для 1 строки всегда галочка
-        if imageCheck.isHidden == true && row == 0 {
-            imageCheck.isHidden = false
-        }
-    }
-    
-    func deselectAndSetMark(){
-        // меняет галочку на обратную
-        if imageCheck.isHidden == true {
-            imageCheck.isHidden = false
-        } else if imageCheck.isHidden == false {
-            imageCheck.isHidden = true
-        }
-    }
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupView()
@@ -66,8 +50,15 @@ class TableActivitiesDetailsCell: UITableViewCell {
         ])
     }
     
-    func setupTextForCell(_ data: String){
-        textForCell.text = data
-        imageCheck.isHidden = true
+    func setupTextForCell(_ habit: Habit, _ data: Date){
+        let textFormat = DateFormatter()
+        textFormat.dateStyle = .long
+        textForCell.text = textFormat.string(from: data)
+        
+        if HabitsStore.shared.habit(habit, isTrackedIn: data) {
+            imageCheck.isHidden = false
+        } else {
+            imageCheck.isHidden = true
+        }
     }
 }
